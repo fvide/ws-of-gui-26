@@ -2,7 +2,9 @@
 
 ## Some useful commands
 
-In this section, we present a series of useful commands to use with Deucalion. The OpenFOAM tutorial begins in the next section.
+In this section, we present a series of useful commands to use with Deucalion. The OpenFOAM (OF) tutorial begins in the next section. Before continuing with with this tutorial, it is advisable to read the job submission section of Deucalion’s documentation [https://docs.deucalion.macc.fccn.pt/jobs/](https://docs.deucalion.macc.fccn.pt/jobs/).
+
+If you do not have previous experience working with an HPC cluster, it is advisable to check out the [Introduction to High-Performance Computing](https://carpentries-incubator.github.io/hpc-intro/) carpentry, especially sections [4](https://carpentries-incubator.github.io/hpc-intro/13-scheduler.html) and [6](https://carpentries-incubator.github.io/hpc-intro/15-modules.html).
 
 ### Changing to `projects` folder
 
@@ -32,7 +34,7 @@ To submit any job in Deucalion, be it an interactive job or a batch job, we need
 └───────────────────────────┴──────────┴───────────┴──────────┘
 ```
 
-where we see the account references followed by the number of `CPU.h` used. It's important to note that the last letter of this account code refers to the type of resource that is allocated to that reference:
+here we see the account references followed by the number of `CPU.h` used. It's important to note that the last letter of this account code refers to the type of resource that is allocated to that reference:
 
 * Finishing with an `a`: account reference to be used in ARM jobs;
 * Finishing with an `x`: account reference to be used in x86 jobs;
@@ -66,20 +68,20 @@ srun -A <PROJECT_ACCOUNT> --partition=dev-arm --time=04:00:00 --nodes=1 --ntasks
 
 where the `<PROJECT_ACCOUNT>` should be replaced with the adequate reference (ending in `a`).
 
-We may want to create an alias for this command, if we plan to use it frequently. To do so, we can run:
+Again, if we wish to create an alias for this command, we can run:
 
 ```bash
 echo "alias sarm='srun -A <PROJECT_ACCOUNT> --partition=dev-arm --time=04:00:00 --nodes=1 --ntasks=48 --pty bash'" >> ~/.bashrc && source ~/.bashrc
 ```
 
-with this, we can run the same command with the alias `sarm`.
+and run `sarm` when we wish to start and ARM interactive session.
 
 ## Which versions of OF are available in each Deucalion partition?
 
-To see which versions of OpenFOAM are available in each architecture of Deucalion, we can run the following command in a node of each architecture:
+To see which versions of OpenFOAM are available in Deucalion, we can run the following command in a node of each architecture:
 
 ```bash
-ml av openfoam
+ml av openfoam # the same as `module avail openfoam`
 ```
 
 For the `x86` architecture, we may run this command in a login node, since the login nodes are `x86`. Doing so will return the following output:
@@ -157,9 +159,15 @@ Use "module keyword key1 key2 ..." to search for all
 possible modules matching any of the "keys".
 ```
 
+> Notice that we are in the ARM node `cna0001` (in the prompt we first have the username, `franciscovide`, followed by the node in which the current shell is running, `cna0001`, ending with the current directory name, `~`). The node naming convention in Deucalion is the following:
+>
+> * `cnaXXXX`: ARM nodes
+> * `cnxXXXX`: x86 nodes
+> * `gnxXXXX`: x86 accelerated nodes (with GPUs)
+
 ## Running the `motorBike` case
 
-As a simple example, we will see how to run the `motorBike` of `simpleFoam` in Deucalion. We will use the `OpenFOAM/v2512-foss-2025a` version in an ARM node.
+As a simple example, we will see how to run the `motorBike` case of `simpleFoam` in Deucalion. We will use the `OpenFOAM/v2512-foss-2025a` version in an ARM node.
 
 First, and from our login shell, we change directory to our `projects` folder, using the `cdp`  command:
 
@@ -176,7 +184,7 @@ then, we create a folder with our username, and move our shell into it:
 [franciscovide@ln04 F202500001HPCVLABEPICURE]$ mkdir $USER && cd $USER
 ```
 
-We can now set up our case directory. We start an interactive job in an ARM node from our current shell, such that we make sure that we are using the case directory of the correct OF version:
+We can now set up our case directory. We start an interactive job in an ARM node from our current shell, such that we make sure that we are copying the tutorial case of the correct OF version:
 
 ```bash
 [franciscovide@ln04 franciscovide]$ srun -A <PROJECT_ACCOUNT> --partition=dev-arm --time=04:00:00 --nodes=1 --ntasks=48 --pty bash
@@ -185,13 +193,7 @@ srun: job 1383364 has been allocated resources
 [franciscovide@cna0001 franciscovide]$
 ```
 
-> Notice that we are now in the ARM node `cna0001` (in the prompt we first have the username, `franciscovide`, followed by the node in which the current shell is running, `cna0001`, ending with the current directory name, `franciscovide`, which we named after the username in this case). The node naming convention in Deucalion is the following:
->
-> * `cnaXXXX`: ARM nodes
-> * `cnxXXXX`: x86 nodes
-> * `gnxXXXX`: x86 accelerated nodes (with GPUs)
-
-After this, we load the `OpenFOAM/v2512-foss-2025a` module, as well as the OpenFOAM environment variables by sourcing the `$FOAM_BASH`  script:
+After this, we load the `OpenFOAM/v2512-foss-2025a` module, as well as the OpenFOAM environment variables by sourcing the `$FOAM_BASH` script:
 
 ```bash
 [franciscovide@cna0001 franciscovide]$ ml OpenFOAM/v2512-foss-2025a
@@ -199,7 +201,7 @@ After this, we load the `OpenFOAM/v2512-foss-2025a` module, as well as the OpenF
 [franciscovide@cna0001 franciscovide]$
 ```
 
-We can now find the `motorBike` case and copy it to our `projects` folder by making use of tab completion: we begin our command with `cp -r $FOAM_TUTORIALS/`  and hit tab twice to see which folders are present in each directory level, finishing the command by adding ` .` when we find the `motorBike` case directory:
+We can now find the `motorBike` case and copy it to our `projects` folder by making use of tab completion: we begin our command with `cp -r $FOAM_TUTORIALS/` and hit tab twice to see which folders are present in each directory level, finishing the command by adding ` .` when we find the `motorBike` case directory:
 
 ```bash
 [franciscovide@cna0001 franciscovide]$ cp -r $FOAM_TUTORIALS/
@@ -240,7 +242,7 @@ We can now move into the `motorBike` directory and inspect it:
 [franciscovide@cna0001 motorBike]$
 ```
 
-After this, we can close our interactive job with the `exit` command:
+After this, we can close our interactive job with the `exit` command (or by pressing `Ctrl-c`):
 
 ```bash
 [franciscovide@cna0001 motorBike]$ exit
@@ -297,7 +299,7 @@ coeffs
 // ************************************************************************* //
 ```
 
-which defines the partitioning of the numerical mesh into 6 subdomains, hence 6 MPI Ranks are to be used. As such, we will set up the batch script to use 6 tasks. We can create this script with the following command (you can simply copy and paste on your terminal from `cat` until the last `EOF`):
+which defines the partitioning of the mesh into 6 subdomains, hence 6 MPI Ranks are to be used. As such, we will set up the batch script to use 6 tasks. We can create this script with the following command (you can simply copy and paste on your terminal from `cat` until the last `EOF`):
 
 ```bash
 [franciscovide@ln04 motorBike]$ cat <<EOF > run.sh
@@ -323,7 +325,7 @@ Edit this file such that the correct project number is used (take care to choose
 [franciscovide@ln04 motorBike]$ nano run.sh
 ```
 
-After changing to the correct project number, we can save the changes and exit by pressing `CTRL-x` and following the instructions at the bottom of the terminal window.
+After changing to the correct project number, we can save the changes and exit by pressing `Ctrl-x` and following the instructions at the bottom of the terminal window.
 
 Notice that we set the flag `--ntasks=6`  such that 6 MPI Ranks will be used, and that the ARM partition was chosen, `--partition=normal-arm` (check the available partitions and their restrictions in this [documentation page](https://docs.deucalion.macc.fccn.pt/jobs/#partitions-on-deucalion)).
 
@@ -557,7 +559,7 @@ mpirun --map-by=numa:PE=1 -n $SLURM_NTASKS simpleFoam -parallel -decomposeParDic
 
 notice that we made use of the environment variable `$SLURM_NTASKS` such that we need not repeat the information defined in the batch script header.
 
-We can check the definition of each of the flags used in the batch script header (the ones which follow `#SBATCH`) by reading the `salloc` manual in Deucalion:
+We can check the definition of each of the flags used in the batch script header (the ones which follow `#SBATCH`) by reading the `sbatch` manual in Deucalion:
 
 ```bash
 man sbatch
