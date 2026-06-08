@@ -120,7 +120,7 @@ Use "module keyword key1 key2 ..." to search for all
 possible modules matching any of the "keys".
 ```
 
-If we wish to see the available OF version in ARM, we must first start an interactive job in an ARM node:
+If we wish to see the available OF versions in ARM, we must first start an interactive job in an ARM node:
 
 ```bash
 srun -A <PROJECT_ACCOUNT> --partition=dev-arm --time=04:00:00 --nodes=1 --ntasks=48 --pty bash
@@ -233,7 +233,7 @@ pipeCyclic/           simpleCar/
 [franciscovide@cna0001 franciscovide]$
 ```
 
-We can now move into the `motorBike` directory and inspect it:
+We can now inspect the `motorBike` directory:
 
 ```bash
 [franciscovide@cna0001 franciscovide]$ ls motorBike
@@ -319,7 +319,7 @@ source \$FOAM_BASH
 EOF
 ```
 
-Edit this file such that the correct project number is used (take care to choose the project number ending with an `a`, since we are submitting a simulation to an ARM node), either with `nano` or the `vim` editor:
+This file needs to be edited such that the correct project number is used (take care to choose the project number ending with an `a`, since we are submitting a simulation to an ARM node), either with `nano` or the `vim` editor:
 
 ```bash
 [franciscovide@ln04 motorBike]$ nano run.sh
@@ -383,7 +383,7 @@ Now, from a terminal in our local machine, we can can run the following command:
 franciscovide@macbook ~ % scp -i ~/.ssh/id_ed25519 -r franciscovide@login.deucalion.macc.fccn.pt:/projects/F202500001HPCVLABEPICURE/franciscovide/mb.tgz .
 ```
 
-(assuming that the `ssh` key used to access Deucalion is stored in the file `~/.ssh/id_ed25519`). We can then extract the files in our local machine with command:
+(assuming that the `ssh` key used to access Deucalion is stored in the file `~/.ssh/id_ed25519`). We can then extract the files in our local machine with the command:
 
 ```bash
 franciscovide@macbook ~ % tar xvf mb.tgz
@@ -496,7 +496,7 @@ and we can see that in this case the `runParallel` command is equivalent to:
 mpirun -n 6 simpleFoam -parallel -decomposeParDict system/decomposeParDict.6 < /dev/null > "log.simpleFoam" 2>&1
 ```
 
-knowing this is useful, especially if we wish to pass some flags to the `mpirun`  command. When running simulations in an `x86` node, we found that an adequate use of the `mpirun` flag `map-by` may lead to a significant increase in parallel performance. Thus, in this case, our simulation could benefit from changing the previous command to:
+knowing this is useful, especially if we wish to pass some flags to the `mpirun`  command. When running simulations in an `x86` node of Deucalion, we found that an adequate use of the `mpirun` flag `map-by` may lead to a significant increase in parallel performance. Thus, in this case, our simulation could benefit from changing the previous command to:
 
 ```bash
 mpirun --map-by=numa:PE=1 -n 6 simpleFoam -parallel -decomposeParDict system/decomposeParDict.6 < /dev/null > "log.simpleFoam" 2>&1
@@ -566,7 +566,7 @@ runApplication reconstructPar -latestTime
 
 ### Useful `SBATCH` flags
 
-In the previous this example, we are using the `Allrun` script, however, we may wish to run each application separately, such that we have a finer control over the running process.
+In the previous this example, we were using the `Allrun` script, however, we may wish to run each application separately, such that we have a finer control over the running process.
 
 If we simply wish to run the solver from the previous example, we may use the following batch script, to be run in the case folder:
 
