@@ -380,7 +380,7 @@ Now we have the `mb.tgz` archive of the case folder. Next, we need to get the lo
 Now, from a terminal in our local machine, we can can run the following command:
 
 ```bash
-franciscovide@macbook ~ % scp -i ~/.ssh/id_ed25519 -r franciscovide@login.deucalion.macc.fccn.pt:/projects/F202500001HPCVLABEPICURE/franciscovide/mb.tgz .
+franciscovide@macbook ~ % scp -i ~/.ssh/id_ed25519 franciscovide@login.deucalion.macc.fccn.pt:/projects/F202500001HPCVLABEPICURE/franciscovide/mb.tgz .
 ```
 
 (assuming that the `ssh` key used to access Deucalion is stored in the file `~/.ssh/id_ed25519`). We can then extract the files in our local machine with the command:
