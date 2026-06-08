@@ -360,7 +360,7 @@ log.checkMesh  log.snappyHexMesh       processor1
 [franciscovide@ln02 motorBike]$
 ```
 
-where we can find the `of.o1383460` and the `of.e1383460` files which are the logs of `stdout` and the `stderr`, respectively.
+where we can find the `of.o1383460` (`of.o<JOB_ID>`) and the `of.e1383460` (`of.e<JOB_ID>`) files which are the logs of `stdout` and the `stderr`, respectively.
 
 Finally, we can transfer the results to our local machine. We must first create an archive of our case folder in order to avoid the inefficient process of transferring many small files. To do so, we can run the following command on our case directory:
 
