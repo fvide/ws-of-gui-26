@@ -236,23 +236,23 @@ pipeCyclic/           simpleCar/
 We can now move into the `motorBike` directory and inspect it:
 
 ```bash
-[franciscovide@cna0001 franciscovide]$ cd motorBike
-[franciscovide@cna0001 motorBike]$ ls
+[franciscovide@cna0001 franciscovide]$ ls motorBike
 0.orig  Allclean  Allrun  constant  system
-[franciscovide@cna0001 motorBike]$
+[franciscovide@cna0001 franciscovide]$
 ```
 
-After this, we can close our interactive job with the `exit` command (or by pressing `Ctrl-c`):
+After this, we can close our interactive job with the `exit` command (or by pressing `Ctrl-d`):
 
 ```bash
-[franciscovide@cna0001 motorBike]$ exit
+[franciscovide@cna0001 franciscovide]$ exit
 exit
-[franciscovide@ln04 motorBike]$
+[franciscovide@ln04 franciscovide]$
 ```
 
 Next, we check the number of MPI Ranks used in this example by inspecting the `Allrun` script:
 
 ```bash
+[franciscovide@ln04 franciscovide]$ cd motorBike
 [franciscovide@ln04 motorBike]$ cat Allrun
 #!/bin/sh
 cd "${0%/*}" || exit                                # Run from this directory
@@ -361,6 +361,35 @@ log.checkMesh  log.snappyHexMesh       processor1
 ```
 
 where we can find the `of.o1383460` and the `of.e1383460` files which are the logs of `stdout` and the `stderr`, respectively.
+
+Finally, we can transfer the results to our local machine. We must first create an archive of our case folder in order to avoid the inefficient process of transferring many small files. To do so, we can run the following command on our case directory:
+
+```bash
+[franciscovide@ln02 motorBike]$ cd ..
+[franciscovide@ln02 franciscovide]$ tar cavf mb.tgz motorBike
+```
+
+Now we have the `mb.tgz` archive of the case folder. Next, we need to get the location of this archive file, and we can do so by running the `pwd` command:
+
+```bash
+[franciscovide@ln02 franciscovide]$ pwd
+/projects/F202500001HPCVLABEPICURE/franciscovide
+[franciscovide@ln02 franciscovide]$ 
+```
+
+Now, from a terminal in our local machine, we can can run the following command:
+
+```bash
+franciscovide@macbook ~ % scp -i ~/.ssh/id_ed25519 -r franciscovide@login.deucalion.macc.fccn.pt:/projects/F202500001HPCVLABEPICURE/franciscovide/mb.tgz .
+```
+
+(assuming that the `ssh` key used to access Deucalion is stored in the file `~/.ssh/id_ed25519`). We can then extract the files in our local machine with command:
+
+```bash
+franciscovide@macbook ~ % tar xvf mb.tgz
+```
+
+For more details on how to transfer files to and from an HPC computer, please refer to this [section](https://carpentries-incubator.github.io/hpc-intro/16-transferring-files.html) of the HPC carpentry mentioned before.
 
 ### Tweaking the `mpirun` command
 
@@ -574,9 +603,9 @@ Next follows a summary of some commonly used `sbatch` flags:
 | `--error` | Standard error (`%j` is replaced by the job ID) |
 | `--partition` | Partition for the resource allocation (see this [link](https://docs.deucalion.macc.fccn.pt/jobs/#partitions-on-deucalion)) |
 | `--time` | Limit of the total time of the job allocation |
-| `--ntasks` | Tells Slurm how many tasks/processes are being lauched by the application |
+| `--ntasks` | Tells Slurm how many tasks/processes are being launched by the application |
 | `--account` | Account to be billed for the resources spent by the job |
-| `--nodes` | Requests a mininum number of nodes to be allocated for the job |
+| `--nodes` | Requests a minimum number of nodes to be allocated for the job |
 | `--ntasks-per-node` | Requests Slurm to place this number of tasks in each node |
-| `--no-requeue` | Prevent Slurm from re-lauching the job in case of node failure |
+| `--no-requeue` | Prevent Slurm from re-launching the job in case of node failure |
 
